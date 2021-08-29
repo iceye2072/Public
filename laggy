@@ -1,20 +1,5 @@
 {
-  "dns": {
-        "servers": [
-            {
-                "address": "127.0.0.1", 
-                "domains": [
-                    "geosite:netflix"
-                ]
-            },
-            "localhost"
-        ],
-        "clientIp": "119.28.107.65", 
-        "queryStrategy": "UseIP",
-        "disableCache": true,
-        "disableFallback": true,
-        "tag": "dns_inbound"
-    },
+  "log": null,
   "routing": {
     "rules": [
       {
@@ -40,24 +25,71 @@
       }
     ]
   },
+  "dns": {
+    "servers": [
+      {
+        "address": "127.0.0.1",
+        "domains": [
+          "geosite:netflix"
+        ]
+      },
+      "localhost"
+    ],
+    "clientIp": "119.28.107.65",
+    "queryStrategy": "UseIP",
+    "disableCache": true,
+    "disableFallback": true,
+    "tag": "dns_inbound"
+  },
+  "inbounds": [
+    {
+      "listen": null,
+      "port": 1234,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [
+          {
+            "password": "pass",
+            "flow": "xtls-rprx-direct"
+          }
+        ],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "123.123.123",
+          "certificates": [
+            {
+              "certificateFile": "/root/cert.crt",
+              "keyFile": "/root/private.key"
+            }
+          ]
+        },
+        "tcpSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "inbound-1234",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      }
+    }
+  ],
   "outbounds": [
     {
       "protocol": "freedom",
       "settings": {
-           "domainStrategy": "UseIP"
+        "domainStrategy": "UseIP"
       }
     }
-  ],
-  "outboundDetour": [
-        {
-            "protocol": "blackhole",
-            "settings": {
-                "response": {
-                    "type": "http"
-                }
-            },
-            "tag": "blocked"
-        }
   ],
   "transport": null,
   "policy": {
@@ -77,4 +109,3 @@
   "stats": {},
   "reverse": null,
   "fakeDns": null
-}
