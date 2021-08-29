@@ -1,0 +1,80 @@
+{
+  "dns": {
+        "servers": [
+            {
+                "address": "127.0.0.1", 
+                "domains": [
+                    "geosite:netflix"
+                ]
+            },
+            "localhost"
+        ],
+        "clientIp": "119.28.107.65", 
+        "queryStrategy": "UseIP",
+        "disableCache": true,
+        "disableFallback": true,
+        "tag": "dns_inbound"
+    },
+  "routing": {
+    "rules": [
+      {
+        "inboundTag": [
+          "api"
+        ],
+        "outboundTag": "api",
+        "type": "field"
+      },
+      {
+        "ip": [
+          "geoip:private"
+        ],
+        "outboundTag": "blocked",
+        "type": "field"
+      },
+      {
+        "outboundTag": "blocked",
+        "protocol": [
+          "bittorrent"
+        ],
+        "type": "field"
+      }
+    ]
+  },
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {
+           "domainStrategy": "UseIP"
+      }
+    }
+  ],
+  "outboundDetour": [
+        {
+            "protocol": "blackhole",
+            "settings": {
+                "response": {
+                    "type": "http"
+                }
+            },
+            "tag": "blocked"
+        }
+  ],
+  "transport": null,
+  "policy": {
+    "system": {
+      "statsInboundDownlink": true,
+      "statsInboundUplink": true
+    }
+  },
+  "api": {
+    "services": [
+      "HandlerService",
+      "LoggerService",
+      "StatsService"
+    ],
+    "tag": "api"
+  },
+  "stats": {},
+  "reverse": null,
+  "fakeDns": null
+}
